@@ -1,2 +1,6 @@
 input*.txt
 .vscode
+*.obj
+*.exe
+*.ilk
+*.pdb
