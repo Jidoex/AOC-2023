@@ -2,6 +2,13 @@
 #include <map>
 #include <limits>
 
+struct AlmanacConversion
+{
+    unsigned long input_min;
+    unsigned long input_max;
+    unsigned long shift;
+};
+
 int main()
 {
     std::fstream input_file;
@@ -12,48 +19,56 @@ int main()
 
     std::string line;
 
-    int resultPart2 = 0;
+    unsigned long resultPart2 = 0;
 
     // Get Seeds
     std::getline(input_file, line);
     std::vector<std::string> seeds = TextUtils::Split(line, " ");
-    // std::vector<int> seeds;
-    // std::transform(first_line.begin() + 1, first_line.end(),
-    //                std::back_inserter(seeds), [](std::string input) -> int
-    //                { return std::stoi(input); });
+    
     std::getline(input_file, line);
-
+    
     // Get Almanac Maps
-    std::vector<std::map<int, int>> almanac;
+    std::vector<std::vector<AlmanacConversion>> almanac;
 
-    for (int i = 0; i < 7; i++)
+    for (unsigned long i = 0; i < 7; i++)
     {
         if (!std::getline(input_file, line))
         {
             break;
         }
 
-        std::map<int, int> almanac_map;
+        std::vector<AlmanacConversion> almanac_map;
         while (std::getline(input_file, line) && line != "")
         {
             auto almanac_elem = TextUtils::Split(line, " ");
-            for (int j = 0; j < std::stoi(almanac_elem[2]); j++)
-            {
-                almanac_map[std::stoi(almanac_elem[1]) + j] = j + std::stoi(almanac_elem[0]);
-            }
+            unsigned long output = std::stoul(almanac_elem[0]);
+            unsigned long input = std::stoul(almanac_elem[1]);
+            unsigned long range = std::stoul(almanac_elem[2]);
+            
+            almanac_map.push_back({input, input+range-1, output-input });
+            
         }
         almanac.push_back(almanac_map);
     }
 
+    std::cout << "All parsed, now computing solution" << std::endl;
+
     // Solve Part1
-    int resultPart1 = std::numeric_limits<int>::max();
+    unsigned long resultPart1 = std::numeric_limits<unsigned long>::max();
     for (int i = 1; i < seeds.size(); i++)
     {   
-        int seed = std::stoi(seeds[i]);
-        int location = seed;
-        for (auto map : almanac)
+        unsigned long seed = std::stoul(seeds[i]);
+        unsigned long location = seed;
+        for (auto almanac_conversions : almanac)
         {
-            location = (map.count(location)) ? map[location] : location;
+            auto it = std::find_if(almanac_conversions.cbegin(),almanac_conversions.cend(), [location](const AlmanacConversion& alma_elem){
+                return (location>=alma_elem.input_min) && (location<=alma_elem.input_max);});
+
+            if(it != almanac_conversions.cend())
+            {
+                location += it->shift;
+            }
+            
         }
         resultPart1 = std::min(resultPart1, location);
     }
