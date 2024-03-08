@@ -2,7 +2,7 @@
 #include <cmath>
 #include <map>
 
-int solve(const std::string& line)
+int solve(const std::string &line)
 {
     auto split_line = TextUtils::Split(line, ":|");
     auto winning_numbers = TextUtils::Split(split_line[1], " ");
@@ -10,11 +10,11 @@ int solve(const std::string& line)
 
     int exponent = 0;
 
-    for(auto winning_number : winning_numbers)
+    for (auto winning_number : winning_numbers)
     {
-        for(auto my_number : my_numbers)
+        for (auto my_number : my_numbers)
         {
-            if(my_number != "" && winning_number != "" && my_number == winning_number)
+            if (my_number != "" && winning_number != "" && my_number == winning_number)
             {
                 exponent += 1;
             }
@@ -24,9 +24,9 @@ int solve(const std::string& line)
     return exponent;
 }
 
-int main(int p_argv, char** p_argc) 
+int main(int p_argv, char **p_argc)
 {
-    std::fstream input_file;  
+    std::fstream input_file;
     input_file.open("input_day4.txt", std::ios::in);
 
     std::cout << std::boolalpha;
@@ -38,16 +38,16 @@ int main(int p_argv, char** p_argc)
     int resultPart2 = 0;
     int line_index = 0;
     std::map<int, int> numberOfCopies;
-    while(std::getline(input_file, line))
-    {   
+    while (std::getline(input_file, line))
+    {
         int match = solve(line);
 
-        resultPart1 += (match > 0) ? pow(2, match -1) : 0;
+        resultPart1 += (match > 0) ? pow(2, match - 1) : 0;
 
         numberOfCopies[line_index] += 1;
         resultPart2 += numberOfCopies[line_index];
 
-        for(int i = line_index + 1; i <= line_index + match; i++)
+        for (int i = line_index + 1; i <= line_index + match; i++)
         {
             numberOfCopies[i] += numberOfCopies[line_index];
         }
