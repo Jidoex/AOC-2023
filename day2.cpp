@@ -5,36 +5,19 @@
 #include <vector>
 #include <sstream>
 #include <map>
-
-// Line of the input format:
-// Game {Game number} : [{number of balls} {color},];
-
-std::vector<std::string> split(std::string s, char delimiter) {
-    size_t pos_start = 0, pos_end, delim_len = 1;
-    std::string token;
-    std::vector<std::string> res;
-
-    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
-        token = s.substr (pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back (token);
-    }
-
-    res.push_back (s.substr (pos_start));
-    return res;
-}
+#include "TextUtils.hpp"
 
 bool solveDay2Part1(const std::string& p_line)
 {       
     static std::map<std::string, int> color_to_threshold {{"red", 12}, {"green", 13}, {"blue", 14}};
 
-    std::vector<std::string> parsed_line = split(p_line, ':');
-    for(std::string round : split(parsed_line.at(1), ';'))
+    std::vector<std::string> parsed_line = TextUtils::Split(p_line, ':');
+    for(std::string round : TextUtils::Split(parsed_line.at(1), ';'))
     {
-        for(std::string result : split(round, ','))
+        for(std::string result : TextUtils::Split(round, ','))
         {   
             //result " number color"
-            std::vector<std::string> pair = split(result, ' ');
+            std::vector<std::string> pair = TextUtils::Split(result, ' ');
             std::string color = pair.at(2);
             int number = std::stoi(pair.at(1));
 
@@ -56,12 +39,12 @@ int solveDay2Part2(const std::string& p_line)
 {       
     std::map<std::string, int> color_to_threshold {{"red", 0}, {"green", 0}, {"blue", 0}};
 
-    std::vector<std::string> parsed_line = split(p_line, ':');
-    for(std::string round : split(parsed_line.at(1), ';'))
+    std::vector<std::string> parsed_line = TextUtils::Split(p_line, ':');
+    for(std::string round : TextUtils::Split(parsed_line.at(1), ';'))
     {
-        for(std::string result : split(round, ','))
+        for(std::string result : TextUtils::Split(round, ','))
         {   
-            std::vector<std::string> pair = split(result, ' ');
+            std::vector<std::string> pair = TextUtils::Split(result, ' ');
             std::string color = pair.at(2);
             int number = std::stoi(pair.at(1));
 
