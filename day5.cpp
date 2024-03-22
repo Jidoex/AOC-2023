@@ -43,7 +43,8 @@ void cleanifySeedRanges(SeedRange::Vect& p_seedRanges)
     {
         if(it->seed_max >= (it+1)->seed_min)
         {
-            (it+1)->seed_min = it->seed_min;
+            (it+1)->seed_min = std::min(it->seed_min, (it+1)->seed_min);
+            (it+1)->seed_max = std::max(it->seed_max, (it+1)->seed_max);
             it = cleanedRanges.erase(it);
             continue;
         }
@@ -172,18 +173,15 @@ int main()
     unsigned long resultPart2 = std::numeric_limits<unsigned long>::max();
 
     // Create the seed ranges from the input
-    for (int i = 1; i < (seedsString.size() -1 ); i=i+2){
+    for (int i = 1; i < (seedsString.size() -1 ); i=i+2)
+    {
         SeedRange seedRange;
         seedRange.seed_min = std::stoul(seedsString[i]);
         seedRange.seed_max=seedRange.seed_min + (std::stoul(seedsString[i+1])-1);
         seedRanges.push_back(seedRange);
-
-        seedsRangePart1.push_back({std::stoul(seedsString[i]),std::stoul(seedsString[i])});
-        seedsRangePart1.push_back({std::stoul(seedsString[i+1]),std::stoul(seedsString[i+1])});
     }
-    
-    std::cout << "Part 1 double check: " << applyAlmanac(almanac,seedsRangePart1) << std::endl;
-    std::cout << "Part 2: " << applyAlmanac(almanac,seedRanges) << std::endl;
+
+    std::cout << "Part 2: " << std::endl << applyAlmanac(almanac,seedRanges) << std::endl;
 
     return 0;
 }
